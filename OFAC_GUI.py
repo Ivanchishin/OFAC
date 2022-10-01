@@ -68,19 +68,19 @@ class Application(Frame):
             self.lastName_radiobuttion()
             Button(self,
                    text='Запустить выполнение программы',
-                   command=lambda: self.lastName()
+                   command=self.lastName
                    ).grid(row=20, column=0, sticky=W)
         elif self.rbut.get() == '2':
             self.firstName_radiobutton()
             Button(self,
                    text='Запустить выполнение программы',
-                   command=lambda: self.firstName()
+                   command=self.firstName
                    ).grid(row=20, column=0, sticky=W)
         elif self.rbut.get() == '3':
             self.sdnEntry_radiobutton()
             Button(self,
                    text='Запустить выполнение программы',
-                   command =lambda: self.sdnEntry()
+                   command =self.sdnEntry
                    ).grid(row=20, column=0, sticky=W)
 
     def firstName_radiobutton(self):
@@ -197,55 +197,56 @@ class Application(Frame):
             self.info_text.insert(0.0, 'Введён некорректный путь, программа не сработает' + '\n')
 
     def sdnEntry(self):
-        treepath_uncode = self.treepath.get("1.0", END)
-        tree2 = ET.parse(treepath_uncode.removesuffix('\n'))
-        root2 = tree2.getroot()
-        removepath_uncode = self.removepath.get("1.0", END)
-        removepath = removepath_uncode.removesuffix('\n')
-        outpath_uncode = self.outpath.get("1.0", END)
-        outpath = outpath_uncode.removesuffix('\n')
-        self.info_text.insert(END, 'Процесс удаления слов запущен, как закончу сообщу.' + '\n')
-        removes = open(removepath, 'r+')
-        self.info_text.insert(END, 'Открываю файл для удаления слов' + '\n')
-        removeses = removes.read().splitlines()
-        i = -1
-        self.info_text.insert(END, 'Ищу совпадения' + '\n')
-        a1 = root2.findall('.//{http://tempuri.org/sdnList.xsd}sdnEntry')
-        summa = sum(1 for line in a1)
-        for list in a1:
-            i+=1
-            if int(i) == int(summa - 1):
-                self.info_text.insert(END,'Дошёл до конца файла'+ '\n')
-                break
-            if a1[i][1].text in removeses:
-                self.info_text.insert(END,f'Вижу имя {a1[i][1].text}'+ '\n')
-                self.info_text.insert(END,f'Нашёл совпадение, удаляю'+ '\n')
-                a1[i].clear()
-                tree2.write(f'{outpath}\dump.xml')
-        self.info_text.insert(END,'Почти готово, записываю получившийся файл'+ '\n')
-        text_file = open(f'{outpath}\dump.xml', 'r+')
-        text_file2 = open(f'{outpath}\sdn.xml', 'w+')
-        text_file3 = open(f'{outpath}\dump2.xml', 'w+')
-        filesdn = text_file.read()
-        filewrite = text_file2.read()
-
-        text_file2.write(
-            "<?xml version=\"1.0\" standalone=\"yes\"?>\n<sdnList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/sdnList.xsd\">\n")
-        for r in (('ns0:', ''), (':ns0', '')):
-            filesdn = filesdn.replace(*r)
-        text_file3.write(filesdn[49:])
-        text_file3.close()
-        itog = open(f'{outpath}\dump2.xml', 'r+')
-        filesdn2 = itog.read()
-        text_file2.write(filesdn2)
-        text_file.close()
-        text_file2.close()
-        os.remove(f'{outpath}\dump.xml')
-        removes.close()
-        itog.close()
-        os.remove(f'{outpath}\dump2.xml')
-        self.info_text.insert(END, 'Всё готово, можно проверять' + '\n')
-
+        try:
+            treepath_uncode = self.treepath.get("1.0", END)
+            tree2 = ET.parse(treepath_uncode.removesuffix('\n'))
+            root2 = tree2.getroot()
+            removepath_uncode = self.removepath.get("1.0", END)
+            removepath = removepath_uncode.removesuffix('\n')
+            outpath_uncode = self.outpath.get("1.0", END)
+            outpath = outpath_uncode.removesuffix('\n')
+            self.info_text.insert(END, 'Процесс удаления слов запущен, как закончу сообщу.' + '\n')
+            removes = open(removepath, 'r+')
+            self.info_text.insert(END, 'Открываю файл для удаления слов' + '\n')
+            removeses = removes.read().splitlines()
+            i = -1
+            self.info_text.insert(END, 'Ищу совпадения' + '\n')
+            a1 = root2.findall('.//{http://tempuri.org/sdnList.xsd}sdnEntry')
+            summa = sum(1 for line in a1)
+            for list in a1:
+                i+=1
+                if int(i) == int(summa - 1):
+                    self.info_text.insert(END,'Дошёл до конца файла'+ '\n')
+                    break
+                if a1[i][1].text in removeses:
+                    self.info_text.insert(END,f'Вижу имя {a1[i][1].text}'+ '\n')
+                    self.info_text.insert(END,f'Нашёл совпадение, удаляю'+ '\n')
+                    a1[i].clear()
+                    tree2.write(f'{outpath}\dump.xml')
+            self.info_text.insert(END,'Почти готово, записываю получившийся файл'+ '\n')
+            text_file = open(f'{outpath}\dump.xml', 'r+')
+            text_file2 = open(f'{outpath}\sdn.xml', 'w+')
+            text_file3 = open(f'{outpath}\dump2.xml', 'w+')
+            filesdn = text_file.read()
+            filewrite = text_file2.read()
+            text_file2.write(
+                "<?xml version=\"1.0\" standalone=\"yes\"?>\n<sdnList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/sdnList.xsd\">\n")
+            for r in (('ns0:', ''), (':ns0', '')):
+                filesdn = filesdn.replace(*r)
+            text_file3.write(filesdn[49:])
+            text_file3.close()
+            itog = open(f'{outpath}\dump2.xml', 'r+')
+            filesdn2 = itog.read()
+            text_file2.write(filesdn2)
+            text_file.close()
+            text_file2.close()
+            os.remove(f'{outpath}\dump.xml')
+            removes.close()
+            itog.close()
+            os.remove(f'{outpath}\dump2.xml')
+            self.info_text.insert(END, 'Всё готово, можно проверять' + '\n')
+        except:
+            self.info_text.insert(0.0, 'Введён некорректный путь, программа не сработает' + '\n')
 def main():
     root = Tk()
     root.title('OFAC SDN LIST PARSER')
